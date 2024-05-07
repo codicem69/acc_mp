@@ -21,4 +21,11 @@ class Table(object):
     @metadata(mandatory=True)
     def sysRecord_MN(self):
         return self.newrecord(code='MN', descrizione='M/N')
-        
+
+    @metadata(mandatory=True)
+    def sysRecord_MB(self):
+        return self.newrecord(code='MN', descrizione='M/B')
+
+    @metadata(mandatory=True)
+    def sysRecord_MV(self):
+        return self.newrecord(code='MN', descrizione='M/V')    

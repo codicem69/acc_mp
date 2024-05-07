@@ -15,5 +15,5 @@ class Table(object):
 
     def trigger_onInserted(self, record):
         if record['fatt_emesse_id'] :
-            self.db.table('acc_mp.fatt_emesse').notifyDbUpdate(record['fatt_emesse_id'])
+            self.db.table('acc_mp.fat_emesse').notifyDbUpdate(record['fatt_emesse_id'])
         

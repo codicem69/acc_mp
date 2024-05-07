@@ -25,7 +25,7 @@ class Table(object):
 
     def aggiornaCliente(self,record):
         cliente_id = record['cliente_id']
-        self.db.deferToCommit(self.db.table('acc.cliente').ricalcolaBalanceCliente,
+        self.db.deferToCommit(self.db.table('acc_mp.cliente').ricalcolaBalanceCliente,
                                     cliente_id=cliente_id,
                                     _deferredId=cliente_id)
 
