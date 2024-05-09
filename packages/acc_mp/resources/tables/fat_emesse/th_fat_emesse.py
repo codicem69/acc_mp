@@ -21,9 +21,10 @@ class View(BaseComponent):
         r.fieldcell('saldo', totalize=True,
                           range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
         r.fieldcell('semaforo',semaphore=True)
+        r.fieldcell('note',width='auto')
 
     def th_order(self):
-        return 'doc_n:d,data:d'
+        return 'data:d,doc_n:d'
     
     def th_query(self):
         return dict(column='id', op='contains', val='')
@@ -145,7 +146,20 @@ class ViewFromFatture(BaseComponent):
                             dict(field='data', lbl='Date >=',width='10em', op='greatereq', val=''),
                             dict(field='data', lbl='!![it]Data fattura',width='10em')],
                             cols=5, isDefault=True)      
-    
+
+class ViewFatEmessePicker(BaseComponent):
+
+    def th_struct(self,struct):
+        r = struct.view().rows()
+        #r.fieldcell('_row_count', counter=True, name='N.',width='3em')
+        r.fieldcell('cliente_id', width='30em', name='!![it]Cliente')
+        r.fieldcell('imbarcazione_id', width='10em', name='!![it]Imbarcazione')
+        r.fieldcell('doc_n')
+        r.fieldcell('importo', totalize=True)
+
+    def th_order(self):
+        return 'data,doc_n'
+        
 class Form(BaseComponent):
 
     def th_form(self, form):
@@ -166,6 +180,7 @@ class Form(BaseComponent):
         fb.field('doc_n',validate_notnull=True)
         fb.field('importo',font_weight='bold',validate_notnull=True)
         fb.field('scadenza')
+        fb.field('note', colspan=2, width='100%')
 
     def paym_fatEmesse(self,pane):
         pane.inlineTableHandler(relation='@pag_fatture',

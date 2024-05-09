@@ -2,8 +2,8 @@ from gnr.web.gnrbaseclasses import TableScriptToHtml
 from datetime import datetime
 
 class Main(TableScriptToHtml):
-
-    row_table = 'acc.fatture_emesse'
+    maintable = 'acc_mp.fat_emesse'
+    row_table = 'acc_mp.fat_emesse'
     page_width = 297
     page_height = 210
     page_margin_left = 5
@@ -23,16 +23,16 @@ class Main(TableScriptToHtml):
         row = head.row()
         if self.parameter('anno'):
             row.cell("""<center><div style='font-size:14pt;'><strong>Estratto contabile <br>{cliente}</strong></div>
-                    <div style='font-size:10pt;'>{anno}</div></center>::HTML""".format(cliente=self.field('rag_sociale'),anno=self.parameter('anno')))
+                    <div style='font-size:10pt;'>{anno}</div></center>::HTML""".format(cliente=self.field('@cliente_id.rag_sociale'),anno=self.parameter('anno')))
         elif self.parameter('dal'):
             row.cell("""<center><div style='font-size:12pt;'><strong>Estratto contabile <br>{cliente}</strong></div>
-                    <div style='font-size:10pt;'>from {dal} to {al}</div></center>::HTML""".format(cliente=self.field('rag_sociale'),
+                    <div style='font-size:10pt;'>from {dal} to {al}</div></center>::HTML""".format(cliente=self.field('@cliente_id.rag_sociale'),
                     dal=self.parameter('dal'),al=self.parameter('al')))            
         else:
             #row = head.row()
             row.cell("""<center><div style='font-size:14pt;'><strong>Estratto contabile</strong></div>
                     <div style='font-size:12pt;'><strong>{cliente}</strong></div></center>::HTML""".format(
-                                cliente=self.field('rag_sociale')))
+                                cliente=self.field('@cliente_id.rag_sociale')))
 
     def defineCustomStyles(self):
         #Questo metodo definisce gli stili del body dell'html
@@ -52,18 +52,18 @@ class Main(TableScriptToHtml):
     def gridStruct(self,struct):
         #Questo metodo definisce la struttura della griglia di stampa definendone colonne e layout
         r = struct.view().rows()
-        
+        r.fieldcell('@cliente_id.rag_sociale', mm_width=92, subtotal='Totale documento {breaker_value}',subtotal_order_by='@cliente_id.rag_sociale,$data,$doc_n')
         r.fieldcell('data', mm_width=15)
         #r.fieldcell('mese_fattura', hidden=True, subtotal='Totale {breaker_value}', subtotal_order_by="$data")
         #Questa formulaColumn verrà utilizzata per creare i subtotali per mese
-        r.fieldcell('doc_n', mm_width=15, name='Fattura n.')
+        r.fieldcell('doc_n', mm_width=15, name='Documento')
         #r.fieldcell('cliente_id', mm_width=0)
-        r.fieldcell('@imbarcazione_id.nome',mm_width=0, name='Nome Imbarcazione')
-        r.fieldcell('importo', mm_width=20, totalize=True)
+        r.fieldcell('@imbarcazione_id.nome',mm_width=0, name='Nome imbarcazione')
+        r.fieldcell('importo', mm_width=20, totalize=True, name='Importo fatture')
         #r.fieldcell('insda_x',mm_width=10, name='ins_d/a')
         r.fieldcell('tot_pag', mm_width=20, totalize=True)
-        r.fieldcell('saldo', mm_width=20, totalize=True, name='Saldo Avere')
-
+        r.fieldcell('saldo', mm_width=20, totalize=True, name='Saldo avere')
+        
     def gridQueryParameters(self):
         
         condition=[]
@@ -76,11 +76,12 @@ class Main(TableScriptToHtml):
             condition.append('$anno_doc=:anno')
         if self.parameter('dal') and self.parameter('al'):
             condition.append('$data BETWEEN :dal AND :al')
-         
-        return dict(condition=' AND '.join(condition), condition_anno=self.parameter('anno'), 
+
+        result = dict(table='acc_mp.fat_emesse',condition=' AND '.join(condition), condition_anno=self.parameter('anno'),
                     condition_dal=self.parameter('dal'),condition_al=self.parameter('al'),
-                    condition_balance=balance,relation='@fatt_cliente',order_by='$data, $doc_n')
-    
+                    condition_balance=balance)#,order_by='@cliente_id.rag_sociale DESC')#,relation='@fatt_cliente')
+        #print(x)
+        return result
 
     def docFooter(self, footer, lastPage=None):
         #Questo metodo definisce il layout e il contenuto dell'header della stampa

@@ -8,10 +8,10 @@ class View(BaseComponent):
 
     def th_struct(self,struct):
         r = struct.view().rows()
-        r.fieldcell('rag_sociale')
-        r.fieldcell('indirizzo')
-        r.fieldcell('cap')
-        r.fieldcell('citta')
+        r.fieldcell('rag_sociale', width='30em')
+        r.fieldcell('indirizzo', width='20em')
+        r.fieldcell('cap', width='6em')
+        r.fieldcell('citta',width='20em')
         r.fieldcell('vat')
         r.fieldcell('cf')
         r.fieldcell('cod_univoco')

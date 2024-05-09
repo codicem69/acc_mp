@@ -2,7 +2,7 @@
 
 class Table(object):
     def config_db(self,pkg):
-        tbl=pkg.table('fat_emesse', pkey='id', name_long='!![it]Fattura emessa', name_plural='!![it]Fatture emesse',caption_field='id')
+        tbl=pkg.table('fat_emesse', pkey='id', name_long='!![it]Fattura emessa', name_plural='!![it]Fatture emesse',caption_field='doc_imp')
         self.sysFields(tbl)
         
         tbl.column('cliente_id',size='22', group='_', name_long='cliente_id',batch_assign=True
@@ -13,6 +13,7 @@ class Table(object):
         tbl.column('doc_n', name_short='!![it]Doc.no.', dtype='T')
         tbl.column('importo', dtype='money', name_short='!![it]Importo')
         tbl.column('scadenza', dtype='D', name_short='!![it]Scadenza')
+        tbl.column('note', name_short='!![it]Note')
         tbl.formulaColumn('giorni_scadenza',"""CASE WHEN ($scadenza - CURRENT_DATE)>0 AND $saldo>0 THEN 'Scadenza tra giorni ' || cast(($scadenza - CURRENT_DATE) as varchar)
                                         WHEN ($scadenza - CURRENT_DATE)>0 AND $saldo<=0  THEN '!![en]PAYED' 
                                         WHEN ($scadenza - CURRENT_DATE)<0 AND $saldo<=0 THEN '!![en]PAYED' ELSE 'Scaduta da giorni ' || cast((CURRENT_DATE-$scadenza) as varchar) END """,
@@ -22,6 +23,7 @@ class Table(object):
         tbl.formulaColumn('saldo', "$importo-coalesce($tot_pag,0)",dtype='N',name_long='!![it]Saldo',format='#,###.00')
         tbl.formulaColumn('semaforo',"""CASE WHEN $saldo = 0 THEN true ELSE false END""",dtype='B',name_long=' ')
         tbl.formulaColumn('anno_doc',"date_part('year', $data)", dtype='D')
+        tbl.formulaColumn('doc_imp',"$doc_n || ' € ' || $importo")
 
     def aggiornaCliente(self,record):
         cliente_id = record['cliente_id']

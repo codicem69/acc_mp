@@ -2,8 +2,8 @@ from gnr.web.gnrbaseclasses import TableScriptToHtml
 from datetime import datetime
 
 class Main(TableScriptToHtml):
-    maintable = 'acc_mp.cliente'
-    row_table = 'acc_mp.cliente'
+    maintable = 'acc_mp.fat_emesse'
+    row_table = 'acc_mp.fat_emesse'
     css_requires='grid'
     page_width = 297
     page_height = 210
@@ -20,30 +20,26 @@ class Main(TableScriptToHtml):
     empty_row=dict()
     #Grazie a questo parametro in caso di mancanza di dati verrà stampata una griglia vuota invece di una pagina bianca
     virtual_columns = '@fatt_emesse_id.tot_pag,@fatt_emmese_id.saldo' #aggiungiamo le colonne calcolate
-    
+
     def docHeader(self, header):
         #Questo metodo definisce il layout e il contenuto dell'header della stampa
         
-        #if len(self.cliente_id) > 1:
-        #    cliente=''
-        #else:
-        #    cliente= self.rowField('cliente')   
         if self.parameter('cliente_id'):
             cliente=self.rowField('cliente')
         else:
-            cliente= ''
+            cliente= ''  
         head = header.layout(name='doc_header', margin='5mm', border_width=0)
         row = head.row()
         if self.parameter('anno'):
-            row.cell("""<center><div style='font-size:14pt;'><strong>Estratto/Statement <br>{cliente}</strong></div>
+            row.cell("""<center><div style='font-size:14pt;'><strong>Estratto contabile <br>{cliente}</strong></div>
                     <div style='font-size:10pt;'>{anno}</div></center>::HTML""".format(cliente=cliente,anno=self.parameter('anno')))
         elif self.parameter('dal'):
-            row.cell("""<center><div style='font-size:12pt;'><strong>Estratto/Statement <br>{cliente}</strong></div>
+            row.cell("""<center><div style='font-size:12pt;'><strong>Estratto contabile <br>{cliente}</strong></div>
                     <div style='font-size:10pt;'>from {dal} to {al}</div></center>::HTML""".format(cliente=cliente,
                     dal=self.parameter('dal'),al=self.parameter('al')))            
         else:
             #row = head.row()
-            row.cell("""<center><div style='font-size:14pt;'><strong>Estratto/Statement</strong></div>
+            row.cell("""<center><div style='font-size:14pt;'><strong>Estratto contabile</strong></div>
                     <div style='font-size:12pt;'><strong>{cliente}</strong></div></center>::HTML""".format(
                                 cliente=cliente))
 
@@ -65,11 +61,10 @@ class Main(TableScriptToHtml):
     def gridStruct(self,struct):
         #Questo metodo definisce la struttura della griglia di stampa definendone colonne e layout
         r = struct.view().rows()
-        #if len(self.cliente_id) > 1:
-        #    r.cell('cliente',mm_width=30)
         if not self.parameter('cliente_id'):
-            r.cell('cliente',mm_width=100, content_class="breakword", name='Cliente')
-            r.cell('cliente', hidden=True, subtotal='Totali {breaker_value}',subtotal_order_by='$cliente',subtotal_content_class='cell_pers')    
+        #if len(self.cliente_id) > 1:
+            r.cell('cliente',mm_width=100, content_class="breakword",name='Cliente')
+            r.cell('cliente', hidden=True, subtotal='Totali {breaker_value}',subtotal_order_by='$cliente',subtotal_content_class='cell_pers')
         r.cell('data', mm_width=15, name='Data')
          #r.fieldcell('mese_fattura', hidden=True, subtotal='Totale {breaker_value}', subtotal_order_by="$data")
          #Questa formulaColumn verrà utilizzata per creare i subtotali per mese
@@ -77,14 +72,14 @@ class Main(TableScriptToHtml):
         #r.cell('doc_n', hidden=True, subtotal='Totale documento {breaker_value}',subtotal_order_by='$cliente')
         #r.fieldcell('cliente_id', mm_width=0)
         
-        r.cell('nome_imb',mm_width=0,name='Nome imbarcazione')
+        r.cell('nome_imb',mm_width=0,name='Nome imbarcazione', content_class="breakword")
         r.cell('importo', mm_width=20, name='Importo', totalize=True,format='#,###.00')
         #r.cell('insda',mm_width=5, dtype='B')
         r.cell('tot_pag', mm_width=20, name='Totale versamenti', totalize=True,format='#,###.00')
         
         r.cell('saldo',name='Saldo avere', mm_width=20, totalize=True,format='#,###.00')
-        #r.cell('balance_cliente',name='Balance totale',mm_width=20,format='#,###.00', totalize=True)
-        
+       # r.cell('balance_cliente',name='Balance totale',mm_width=20,format='#,###.00', totalize=True)
+
     def calcRowHeight(self):
         #Determina l'altezza di ogni singola riga con approssimazione partendo dal valore di riferimento grid_row_height
         cliente_offset = 20
@@ -93,7 +88,7 @@ class Main(TableScriptToHtml):
         #Attenzione che in questo caso ho una dimensione in num. di caratteri, mentre la larghezza della colonna è definita
         #in mm, e non avendo utti i caratteri la stessa dimensione si tratterà quindi di individuare la migliore approssimazione
         if not self.parameter('cliente_id'):
-            n_rows_cliente = len(self.rowField('cliente'))//cliente_offset
+            n_rows_cliente = len(self.rowField('cliente'))//cliente_offset 
         else:
             n_rows_cliente = len(self.rowField('cliente'))//cliente_offset     
         n_rows_descr = len(self.rowField('descrizione'))//descrizione_offset + 1.2
@@ -130,34 +125,33 @@ class Main(TableScriptToHtml):
         #if self.parameter('dal'):
         #    condition.append('$data >= :data_inizio')
         #where = ' AND '.join(condition
-        #self.cliente_id=self.record('selectionPkeys')
-        clienti_pkeys = self.db.table('acc_mp.cliente').query(columns="$id", where='$balance <>0').selection().output('pkeylist')
+        clienti_pkeys = self.db.table('acc_mp.cliente').query(columns="$id", where='$balance >=0').selection().output('pkeylist')
         self.cliente_id=clienti_pkeys
         if self.parameter('cliente_id'):
             len_cliente=1
         else:
-            len_cliente=len(clienti_pkeys)
-        #print(x)
+            len_cliente=len(clienti_pkeys)   
+
         righe_fat=[]
         righe=[]
         for r in range(len_cliente):
-            #cliente_id=self.record('selectionPkeys')[r]
             #verifichiamo se alla stampa abbiamo scelto il singolo fornitore così passiamo la query giusta per la ricerca del singolo
             #altrimenti saranno selezionati tutti i fornitori e sarà passata la query per tutti
             if self.parameter('cliente_id'):
                 cliente_id=self.parameter('cliente_id')
-                clienti = self.db.table('acc_mp.cliente').query(columns="$id,$rag_sociale,sum($balance) as differenza", where='$id=:pkeys ',
+                clienti = self.db.table('acc_mp.cliente').query(columns="$id,$rag_sociale,sum($balance) as differenza", where='$id=:pkeys and $balance >=0',
                                                              order_by='$rag_sociale',
                                                              group_by='$id',
                                                   pkeys=cliente_id).fetch()
             else:
-                clienti = self.db.table('acc_mp.cliente').query(columns="$id,$rag_sociale,sum($balance) as differenza", where='$id IN :pkeys ',
+                clienti = self.db.table('acc_mp.cliente').query(columns="$id,$rag_sociale,sum($balance) as differenza", where='$id IN :pkeys and $balance >=0',
                                                              order_by='$rag_sociale',
                                                              group_by='$id',
                                                   pkeys=clienti_pkeys).fetch()
 
                 #cliente_id=clienti_pkeys[r]
                 cliente_id=clienti[r][0]
+
             fat_emesse = self.db.table('acc_mp.fat_emesse').query(columns="""$cliente_id,
                                             $data,$doc_n,@imbarcazione_id.nome,$importo,$tot_pag,$saldo""",
                                             where=where,
@@ -183,26 +177,25 @@ class Main(TableScriptToHtml):
             bal_cliente=0
             righe_pag=[]
             for r in range(len(fat_emesse)):
-                if fat_emesse[r][0] == cliente_id:
-                    fat_id=fat_emesse[r][7]
-                    data_fat=fat_emesse[r][1]
-                    doc_n=fat_emesse[r][2]
-                    nome_imb=fat_emesse[r][3]
-                    importo_fat=fat_emesse[r][4]
-                    tot_pag=fat_emesse[r][5]
-                    saldo=fat_emesse[r][6]
-                    #insda=fat_emesse[r][7]
-                    #if insda == True:
-                    #    insda = 'x'
-                    #    saldo_fat = 0
-                    #else:
-                    #    insda = ''
-                    saldo_fat=importo_fat
+                fat_id=fat_emesse[r][7]
+                data_fat=fat_emesse[r][1]
+                doc_n=fat_emesse[r][2]
+                nome_imb=fat_emesse[r][3]
+                importo_fat=fat_emesse[r][4]
+                tot_pag=fat_emesse[r][5]
+                saldo=fat_emesse[r][6]
+                #insda=fat_emesse[r][7]
+                #if insda == True:
+                #    insda = 'x'
+                #    saldo_fat = 0
+                #else:
+                #    insda = ''
+                saldo_fat=importo_fat
 
-                    pag_progressivo=0
-                
+                pag_progressivo=0
+
                 for p in range(len(pagfatEmesse)):
-                    
+
                     if pagfatEmesse[p][0] == fat_id:
                         data=pagfatEmesse[p][1]
                         tot_pag=pagfatEmesse[p][2]
@@ -220,7 +213,7 @@ class Main(TableScriptToHtml):
                         righe_pag.append(dict(data=data,doc_n=doc_n, nome_imb=descrizione_vers, importo='',
                                   tot_pag=tot_pag,saldo='',cliente=cliente))
                 bal_cliente+=saldo_fat
-                
+
                 #if r == len(fat_emesse)-1:
                 #    righe_pag.append(dict(data='',doc_n='Balance', descrizione='Totale ' + str(cliente), importo='',
                 #                  tot_pag='',saldo='',cliente='',balance_cliente=bal_cliente))    
@@ -233,8 +226,7 @@ class Main(TableScriptToHtml):
                 for myDict in righe_fat:
                     if myDict not in righe:
                         righe.append(myDict)
-                       
-        #print(X)        
+                
         return righe    
     
 
@@ -249,7 +241,6 @@ class Main(TableScriptToHtml):
         
     def outputDocName(self, ext=''):
         #Questo metodo definisce il nome del file di output
-        #print(x)
         if len(self.gridData())>0:
             cliente=self.gridData()[0]['cliente'].replace('.','').replace(' ','_')
         else:
@@ -257,19 +248,19 @@ class Main(TableScriptToHtml):
         if ext and not ext[0] == '.':
             ext = '.%s' % ext
         if self.parameter('anno') and self.parameter('cliente_id'):
-            doc_name = 'Estartto_{anno}_{cliente}{ext}'.format(anno=self.parameter('anno'), 
+            doc_name = 'Statement_{anno}_{cliente}{ext}'.format(anno=self.parameter('anno'), 
                         cliente=cliente, ext=ext)
         elif self.parameter('anno'):
-            doc_name = 'Estratto_{anno}{ext}'.format(anno=self.parameter('anno'),ext=ext)    
+            doc_name = 'Statement_{anno}{ext}'.format(anno=self.parameter('anno'),ext=ext)    
         elif self.parameter('dal') and self.parameter('al') and self.parameter('cliente_id'):
-            doc_name = 'Estartto_dal_{dal}_al_{al}_{cliente}{ext}'.format(dal=self.parameter('dal'),
+            doc_name = 'Statement_from_{dal}_to_{al}_{cliente}{ext}'.format(dal=self.parameter('dal'),
                         al=self.parameter('al'),
                         cliente=cliente, ext=ext)   
         elif self.parameter('dal') and self.parameter('al'):
-            doc_name = 'Estratto_dal_{dal}_al_{al}'.format(dal=self.parameter('dal'),
+            doc_name = 'Statement_from_{dal}_to_{al}'.format(dal=self.parameter('dal'),
                         al=self.parameter('al'), ext=ext)
         elif self.parameter('cliente_id'):
-            doc_name = 'Estratto_{cliente}{ext}'.format(cliente=cliente, ext=ext)         
+            doc_name = 'Statement_{cliente}{ext}'.format(cliente=cliente, ext=ext)         
         else: 
-            doc_name = 'Estratto'.format(ext=ext)
+            doc_name = 'Statement'.format(ext=ext)
         return doc_name
