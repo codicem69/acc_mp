@@ -19,7 +19,7 @@ class View(BaseComponent):
         #r.fieldcell('email')
         #r.fieldcell('tel')
         #r.fieldcell('note')
-        r.fieldcell('balance', totalize=True, font_weight='bold', batch_assign=True)
+        r.fieldcell('balance', totalize=True, range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
 
     def th_order(self):
         return 'rag_sociale'
@@ -27,6 +27,33 @@ class View(BaseComponent):
     def th_query(self):
         return dict(column='full_cliente', op='contains', val='')
 
+    def th_sections_fatemesse(self):
+        return [dict(code='tutti',caption='!![it]Tutti'),
+                dict(code='div_zero',caption='!![it]Non nullo',
+                        condition='$balance!=0'),
+                dict(code='da_saldare',caption='!![it]Da saldare',
+                        condition='$balance>0'),
+                dict(code='over_paym',caption='!![it]Maggior pagamento',
+                        condition='$balance<0')]
+    
+    def th_sections_cliente(self):
+        #prendiamo agency_id nel currentEnv
+        ag_id=self.db.currentEnv.get('current_agency_id')
+        #effettuaiamo la ricerca di tutti i clienti filtrando quelli relativi all'agency_id
+        f = self.db.table('acc_mp.cliente').query(where='',order_by='$rag_sociale').selection().output('records')#$agency_id=:ag_id',ag_id=self.db.currentEnv.get('current_agency_id')).fetch()
+        #creaiamo una lista vuota dove andremo ad appendere i dizionari con il valore tutti e con i clienti
+        result=[]
+        result.append(dict(code='tutti',caption='!![it]Tutti'))
+        for r in f:
+            result.append(dict(code=r['id'], caption=r['rag_sociale'],
+                     condition='$id=:cliente',condition_cliente=r['id']))
+        return result
+    
+    def th_top_toolbarsuperiore(self,top):
+        bar=top.slotToolbar('5,sections@fatemesse,sections@cliente,15',
+                        childname='superiore',_position='<bar',sections_cliente_multiButton=False,
+                        sections_cliente_lbl='!![it]Cliente',
+                        sections_cliente_width='60em')
 class Form(BaseComponent):
 
     def th_form(self, form):
@@ -50,7 +77,7 @@ class Form(BaseComponent):
         fb.field('email' )
         fb.field('tel' )
         fb.field('note' )
-        fb.field('balance' )
+        fb.field('balance', readOnly=True )
 
     def fat_emesse(self,pane):
         pane.dialogTableHandler(relation='@fatt_cliente',

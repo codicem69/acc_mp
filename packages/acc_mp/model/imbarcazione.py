@@ -10,5 +10,5 @@ class Table(object):
                     ).relation('tipologia_imb.code', relation_name='tip_imb', mode='foreignkey', onDelete='raise')
         tbl.column('nome', name_short='!![it]Nome')
         tbl.column('reg_n', name_short='!![en]Numero reg.')
-        tbl.formulaColumn('full_imb',"$nome || coalesce(' - ' || reg_n,'')")
+        tbl.formulaColumn('full_imb',"$nome || coalesce(' - ' || reg_n,'') || ' - ' || @cliente_id.rag_sociale || ' - PIVA ' || @cliente_id.vat")
         
