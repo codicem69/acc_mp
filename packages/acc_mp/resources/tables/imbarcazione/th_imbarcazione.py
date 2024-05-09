@@ -8,7 +8,6 @@ class View(BaseComponent):
 
     def th_struct(self,struct):
         r = struct.view().rows()
-        r.fieldcell('id')
         r.fieldcell('tip_id', width='5em')
         r.fieldcell('nome', width='30em')
         r.fieldcell('reg_n')
