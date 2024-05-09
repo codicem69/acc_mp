@@ -91,7 +91,7 @@ class ViewFromFatture(BaseComponent):
         r.fieldcell('semaforo',semaphore=True)
 
     def th_order(self):
-        return 'doc_n,data'
+        return 'data,doc_n'
     
     def th_query(self):
         return dict(column='id', op='contains', val='')

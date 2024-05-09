@@ -14,20 +14,18 @@ class View(BaseComponent):
         r.fieldcell('citta',width='20em')
         r.fieldcell('vat')
         r.fieldcell('cf')
-        r.fieldcell('cod_univoco')
-        r.fieldcell('pec')
-        r.fieldcell('email')
-        r.fieldcell('tel')
-        r.fieldcell('note')
-        r.fieldcell('balance')
+        #r.fieldcell('cod_univoco')
+        #r.fieldcell('pec')
+        #r.fieldcell('email')
+        #r.fieldcell('tel')
+        #r.fieldcell('note')
+        r.fieldcell('balance', totalize=True, font_weight='bold', batch_assign=True)
 
     def th_order(self):
         return 'rag_sociale'
 
     def th_query(self):
         return dict(column='full_cliente', op='contains', val='')
-
-
 
 class Form(BaseComponent):
 
