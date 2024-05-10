@@ -13,6 +13,8 @@ class Table(object):
         tbl.column('doc_n', name_short='!![it]Doc.no.', dtype='T')
         tbl.column('importo', dtype='money', name_short='!![it]Importo')
         tbl.column('scadenza', dtype='D', name_short='!![it]Scadenza')
+        tbl.column('tip_vend',size=':6', group='_', name_long='!![it]Tipologia venduto'
+                    ).relation('tipologia_venduto.code', relation_name='tip_venduto', mode='foreignkey', onDelete='raise')
         tbl.column('note', name_short='!![it]Note')
         tbl.formulaColumn('giorni_scadenza',"""CASE WHEN ($scadenza - CURRENT_DATE)>0 AND $saldo>0 THEN 'Scadenza tra giorni ' || cast(($scadenza - CURRENT_DATE) as varchar)
                                         WHEN ($scadenza - CURRENT_DATE)>0 AND $saldo<=0  THEN '!![en]PAYED' 
@@ -23,7 +25,7 @@ class Table(object):
         tbl.formulaColumn('saldo', "$importo-coalesce($tot_pag,0)",dtype='N',name_long='!![it]Saldo',format='#,###.00')
         tbl.formulaColumn('semaforo',"""CASE WHEN $saldo = 0 THEN true ELSE false END""",dtype='B',name_long=' ')
         tbl.formulaColumn('anno_doc',"date_part('year', $data)", dtype='D')
-        tbl.formulaColumn('doc_imp',"$doc_n || ' € ' || $importo")
+        tbl.formulaColumn('doc_imp',"$doc_n || ' € ' || $importo || ' - ' || $note")
 
     def aggiornaCliente(self,record):
         cliente_id = record['cliente_id']

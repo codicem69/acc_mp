@@ -107,6 +107,7 @@ class Main(TableScriptToHtml):
         return height
     
     def gridData(self): 
+        print(x)
         condition = ['$cliente_id=:cliente_id']
         condition_pag = []
         balance=0

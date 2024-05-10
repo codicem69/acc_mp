@@ -152,10 +152,11 @@ class ViewFatEmessePicker(BaseComponent):
     def th_struct(self,struct):
         r = struct.view().rows()
         #r.fieldcell('_row_count', counter=True, name='N.',width='3em')
-        r.fieldcell('cliente_id', width='30em', name='!![it]Cliente')
+        #r.fieldcell('cliente_id', width='30em', name='!![it]Cliente')
         r.fieldcell('imbarcazione_id', width='10em', name='!![it]Imbarcazione')
         r.fieldcell('doc_n')
         r.fieldcell('importo', totalize=True)
+        r.fieldcell('note')
 
     def th_order(self):
         return 'data,doc_n'
@@ -180,6 +181,7 @@ class Form(BaseComponent):
         fb.field('doc_n',validate_notnull=True)
         fb.field('importo',font_weight='bold',validate_notnull=True)
         fb.field('scadenza')
+        fb.field('tip_vend')
         fb.field('note', colspan=2, width='100%')
 
     def paym_fatEmesse(self,pane):

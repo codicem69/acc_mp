@@ -26,3 +26,4 @@ class Main(BaseResourcePrint):
        fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al')
        fb.dateTextBox(value='^.al',lbl='!![it]Data al')
        fb.dbselect(value='^.cliente_id', table='acc_mp.cliente', lbl='Cliente', selected_rag_sociale='.rag_sociale',hasDownArrow=True)
+       #fb.dbselect(value='^.imbarcazione_id', table='acc_mp.imbarcazione', lbl='Imbarcazione', selected_nome='.nome',hasDownArrow=True,condition="$cliente_id=:cod",condition_cod='^.cliente_id')
