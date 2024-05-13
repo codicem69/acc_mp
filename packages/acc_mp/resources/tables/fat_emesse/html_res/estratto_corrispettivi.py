@@ -101,10 +101,12 @@ class Main(TableScriptToHtml):
             if r[3] == 'BENZ_8':
                 f_benz8 +=r[2] 
             if r[1]:
-                fat_n += r[1] + '-'
                 if r == fat_emesse[-1]: 
                     fat_n += r[1]
-                    
+                else:    
+                    fat_n += r[1] + '-'
+                
+
         report = self.db.table('diporto.report').query(columns="""$data,$venduto_gas, $venduto_benz""",
                                             where=where,
                                             data=data_report).fetch()
