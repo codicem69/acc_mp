@@ -181,7 +181,7 @@ class Form(BaseComponent):
         fb.field('doc_n',validate_notnull=True)
         fb.field('importo',font_weight='bold',validate_notnull=True)
         fb.field('scadenza')
-        fb.field('tip_vend')
+        fb.field('tip_vend',validate_notnull=True)
         fb.field('note', colspan=2, width='100%')
 
     def paym_fatEmesse(self,pane):
