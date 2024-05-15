@@ -107,7 +107,7 @@ class Main(TableScriptToHtml):
                     fat_n += r[1] + '-'
                 
 
-        report = self.db.table('diporto.report').query(columns="""$data,$venduto_gas, $venduto_benz""",
+        report = self.db.table('diporto.report').query(columns="""$data,$tot_gasolio, $tot_benzina""",
                                             where=where,
                                             data=data_report).fetch()
         
