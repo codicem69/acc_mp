@@ -6,9 +6,9 @@ class Table(object):
         self.sysFields(tbl)
         
         tbl.column('cliente_id',size='22', group='_', name_long='cliente_id',batch_assign=True
-                    ).relation('cliente.id', relation_name='fatt_cliente', mode='foreignkey', onDelete='cascade')
+                    ).relation('cliente.id', relation_name='fatt_cliente', mode='foreignkey', onDelete='raise')
         tbl.column('imbarcazione_id',size='22', group='_', name_long='imbarcazione_id',batch_assign=True
-                    ).relation('imbarcazione.id', relation_name='fatt_imb', mode='foreignkey', onDelete='cascade')
+                    ).relation('imbarcazione.id', relation_name='fatt_imb', mode='foreignkey', onDelete='raise')
         tbl.column('data', dtype='D', name_short='!![it]Data')
         tbl.column('doc_n', name_short='!![it]Doc.no.', dtype='T')
         tbl.column('importo', dtype='money', name_short='!![it]Importo')
