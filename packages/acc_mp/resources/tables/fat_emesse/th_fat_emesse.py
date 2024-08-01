@@ -91,7 +91,7 @@ class ViewFromFatture(BaseComponent):
         r.fieldcell('semaforo',semaphore=True)
 
     def th_order(self):
-        return 'data,doc_n'
+        return 'data:d,doc_n:d'
     
     def th_query(self):
         return dict(column='id', op='contains', val='')
@@ -164,7 +164,7 @@ class ViewFattureImb(BaseComponent):
         r.fieldcell('semaforo',semaphore=True)
 
     def th_order(self):
-        return 'data,doc_n'
+        return 'data:d,doc_n:d'
     
     def th_query(self):
         return dict(column='id', op='contains', val='')

@@ -43,7 +43,7 @@ class Main(BaseResourceAction):
         for record in iteratore_fatemesse:
             my_records.append(dict(doc_n=record['doc_n'], data=record['data'], importo=record['importo'],saldo=record['saldo'],cliente_id=record['cliente_id'],id=record['id']))
         my_rec=sorted(my_records, key=lambda x:(x['doc_n'],x['data']))
-           
+        
         #for c,record in enumerate(my_rec):
         for record in my_rec:
             saldo_fat -= record['saldo']
@@ -77,6 +77,11 @@ class Main(BaseResourceAction):
                     nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fat_id, data=data_saldo, importo=imp_saldo, note=note)
                     #print(c)
                     self.db.table('acc_mp.pag_fat_emesse').insert(nuovo_pagcliente)
+        #se abbiamo un pagamento maggiore delle fatture selezionate sull'ultima fattura sarà inserito il maggior pagamento
+        if rim_pag > 0:
+            nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fat_id, data=data_saldo, importo=rim_pag, note=note)
+            #print(c)
+            self.db.table('acc_mp.pag_fat_emesse').insert(nuovo_pagcliente)    
                     #if nuovo_pagcliente:
                     #    self.db.commit()
           # print('rim_pag='+str(rim_pag))
@@ -89,24 +94,36 @@ class Main(BaseResourceAction):
                                                                      where='$cliente_id=:c_id',c_id=cliente_id)
         fatture_cliente_id = self.db.table('acc_mp.fat_emesse').query(columns='$id',where='$cliente_id=:c_id', c_id=cliente_id).fetchAsDict('id')
         totale_pagato = 0
-        for a in fatture_cliente_id:
-            pagamenti = self.db.table('acc_mp.pag_fat_emesse').query(columns='$importo',
-                                                                where='$fatt_emesse_id=:fe_id', fe_id=a).fetch()
-            #for r in range(len(pagamenti)-1):
-            #    totale_pagato += pagamenti[0][r]
-            for r in pagamenti:
-                totale_pagato += pagamenti[0][0]   
+        #for a in fatture_cliente_id:
+        #    pagamenti = self.db.table('acc_mp.pag_fat_emesse').query(columns='$importo',
+        #                                                        where='$fatt_emesse_id=:fe_id', fe_id=a).fetch()
+        #    #for r in range(len(pagamenti)-1):
+        #    #    totale_pagato += pagamenti[0][r]
+        #    for r in pagamenti:
+        #        totale_pagato += pagamenti[0][0]
+
+        tbl_pagamenti = self.db.table('acc_mp.pag_fat_emesse')
+        totale_pagato = tbl_pagamenti.readColumns(columns="""SUM($importo)""", where='@fatt_emesse_id.cliente_id=:id_cl', id_cl=cliente_id)
+
         #prendiamo il record della tabella cliente e con for_update=True successivamente faremo l'aggiornamento con il nuovo saldo 
         tbl_cliente = self.db.table('acc_mp.cliente')
         record_cliente = tbl_cliente.record(where='$id=:id_cliente', 
                                   id_cliente=cliente_id,
                                   for_update=True).output('dict')
         old_record = dict(record_cliente)
-        
+        tbl_imb = self.db.table('acc_mp.imbarcazione')
+        imb_id = selection.data[0][6]
+        nome_imb = tbl_imb.readColumns(columns="$nome", where='$id=:id_imb', id_imb=imb_id)
         if totale_fatture is not None:
+            #if rim_pag > 0:
+            #    note=old_record['note']
+            #    if note is None:
+            #        note=''
+            #    nuovo_record = dict(id=cliente_id,note=str(note) + ' ' + str(nome_imb) +' - maggior pagamento di € '+str(rim_pag),balance=floatToDecimal(totale_fatture - totale_pagato or 0))
+            #else:
             nuovo_record = dict(id=cliente_id,balance=floatToDecimal(totale_fatture - totale_pagato or 0))
             tbl_cliente.update(nuovo_record,old_record)
-        
+        #print(X)
         if nuovo_pagcliente:
             self.db.commit()       
 
