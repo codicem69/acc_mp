@@ -147,6 +147,44 @@ class ViewFromFatture(BaseComponent):
                             dict(field='data', lbl='!![it]Data fattura',width='10em')],
                             cols=5, isDefault=True)      
 
+class ViewFattureImb(BaseComponent):
+
+    def th_struct(self,struct):
+        r = struct.view().rows()
+        r.fieldcell('cliente_id', width='30em', name='!![it]Cliente')
+        r.fieldcell('imbarcazione_id', width='30em', name='!![it]Imbarcazione')
+        r.fieldcell('data')
+        r.fieldcell('doc_n')
+        r.fieldcell('importo', totalize=True)
+        r.fieldcell('scadenza')
+        r.fieldcell('giorni_scadenza', width='11em')
+        r.fieldcell('tot_pag', totalize=True)
+        r.fieldcell('saldo', totalize=True,
+                          range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
+        r.fieldcell('semaforo',semaphore=True)
+
+    def th_order(self):
+        return 'data,doc_n'
+    
+    def th_query(self):
+        return dict(column='id', op='contains', val='')
+
+    def th_sections_fatemesse(self):
+        return [dict(code='tutti',caption='!![it]Tutte'),
+                dict(code='da_saldare',caption='!![it]Da saldare',
+                        condition='$saldo>0'),
+                dict(code='saldati',caption='!![it]Saldate',condition='$saldo=0'),
+                dict(code='scaduti',caption='!![it]Scadute',condition='$scadenza<now() and $saldo>0'),
+                dict(code='non_scadute',caption='!![it]Non scadute',condition='$scadenza>now() and $saldo>0'),
+                dict(code='senza_scadenza',caption='!![it]Senza scadenza',condition='$scadenza is null and $saldo!=0')]
+    
+                    
+    def th_top_toolbarsuperiore(self,top):
+        bar=top.slotToolbar('5,sections@fatemesse,10,actions,resourceActions,15',
+                        childname='superiore',_position='<bar')
+                        #,gradient_from='#999',gradient_to='#888')
+        bar.actions.div('Actions')
+
 class ViewFatEmessePicker(BaseComponent):
 
     def th_struct(self,struct):

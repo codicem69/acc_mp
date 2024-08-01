@@ -41,7 +41,7 @@ class Form(BaseComponent):
 
     def fat_emesse(self,pane):
         pane.dialogTableHandler(relation='@fatt_imb',
-                                viewResource='ViewFromFatture',extendedQuery=True,pbl_classes=True)
+                                viewResource='ViewFattureImb',extendedQuery=True,pbl_classes=True)
         
     def th_options(self):
         return dict(dialog_height='400px', dialog_width='600px' )
