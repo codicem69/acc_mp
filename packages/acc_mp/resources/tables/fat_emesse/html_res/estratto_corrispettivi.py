@@ -67,6 +67,7 @@ class Main(TableScriptToHtml):
         r.cell('benznaz', mm_width=20, name='Benzina Naz.', totalize=True,format='#,###.00')
         r.cell('sif', mm_width=20, name='Prodotto SIF', totalize=True,format='#,###.00')
         r.cell('benz8', mm_width=20, name='Benzina senza IVA', totalize=True,format='#,###.00')
+        r.cell('a22', mm_width=20, name='IVA 22%', totalize=True,format='#,###.00')
         r.cell('tot_estratto', mm_width=20, name='Totale giornaliero', totalize=True,format='#,###.00')
           
     
@@ -88,6 +89,7 @@ class Main(TableScriptToHtml):
         f_benznaz=0
         f_sif=0
         f_benz8=0
+        f_22=0
         fat_n=''
         for r in fat_emesse:
             if r[3] == 'SIFIVA':
@@ -99,7 +101,9 @@ class Main(TableScriptToHtml):
             if r[3] == 'SIF':
                 f_sif +=r[2]
             if r[3] == 'BENZ_8':
-                f_benz8 +=r[2] 
+                f_benz8 +=r[2]
+            if r[3] == '22':
+                f_22 +=r[2]
             if r[1]:
                 if r == fat_emesse[-1]: 
                     fat_n += r[1]
@@ -118,8 +122,8 @@ class Main(TableScriptToHtml):
             vend_benznaz = report[0][2]                       
         
 
-        tot_giorn = f_sifiva + vend_benznaz + vend_gasnaz + f_sif + f_benz8
-        righe.append(dict(data=self.parameter('date'),doc_n=fat_n, sifiva=f_sifiva, gasnaz=vend_gasnaz,benznaz=vend_benznaz,sif=f_sif,benz8=f_benz8,tot_estratto=tot_giorn))
+        tot_giorn = f_sifiva + vend_benznaz + vend_gasnaz + f_sif + f_benz8 + f_22
+        righe.append(dict(data=self.parameter('date'),doc_n=fat_n, sifiva=f_sifiva, gasnaz=vend_gasnaz,benznaz=vend_benznaz,sif=f_sif,benz8=f_benz8,a22=f_22,tot_estratto=tot_giorn))
         
         return righe    
     

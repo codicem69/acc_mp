@@ -43,40 +43,41 @@ class Main(BaseResourceAction):
         for record in iteratore_fatemesse:
             my_records.append(dict(doc_n=record['doc_n'], data=record['data'], importo=record['importo'],saldo=record['saldo'],cliente_id=record['cliente_id'],id=record['id']))
         my_rec=sorted(my_records, key=lambda x:(x['doc_n'],x['data']))
-        
+        #print(x)
         #for c,record in enumerate(my_rec):
         for record in my_rec:
             saldo_fat -= record['saldo']
             cliente_id = record['cliente_id']
             saldo = record['saldo']
             #print(record['doc_n'])
-            if saldo > 0:
-                if saldo >= imp_pag:
-                    rim_pag = imp_pag - imp_pag
+            #if saldo > 0:
+            if saldo >= Decimal(imp_pag):
+                #print(c)
+                rim_pag = imp_pag - imp_pag
+                
+                fatemesse_id = record['id']
+                nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fatemesse_id, data=data_saldo, importo=imp_pag, note=note)
+                self.db.table('acc_mp.pag_fat_emesse').insert(nuovo_pagcliente)
+                #if nuovo_pagcliente:
+                #    self.db.commit()
+                if rim_pag == 0:
+                    break
+          
+            else:
+                if rim_pag >= saldo:
+                    imp_saldo = saldo  
+                    imp_pag = rim_pag - saldo
                     
-                    fatemesse_id = record['id']
-                    nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fatemesse_id, data=data_saldo, importo=imp_pag, note=note)
-                    self.db.table('acc_mp.pag_fat_emesse').insert(nuovo_pagcliente)
-                    #if nuovo_pagcliente:
-                    #    self.db.commit()
-                    if rim_pag == 0:
-                        break
                 else:
-
-                    if rim_pag >= saldo:
-                        imp_saldo = saldo  
-                        imp_pag = rim_pag - saldo
-                        
-                    else:
-                        imp_saldo = rim_pag
-                        imp_pag = imp_pag - rim_pag    
-                    
-                    rim_pag = rim_pag - imp_saldo
-                    
-                    fat_id = record['id']
-                    nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fat_id, data=data_saldo, importo=imp_saldo, note=note)
-                    #print(c)
-                    self.db.table('acc_mp.pag_fat_emesse').insert(nuovo_pagcliente)
+                    imp_saldo = rim_pag
+                    imp_pag = imp_pag - rim_pag    
+                
+                rim_pag = rim_pag - imp_saldo
+                
+                fat_id = record['id']
+                nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fat_id, data=data_saldo, importo=imp_saldo, note=note)
+                #print(c)
+                self.db.table('acc_mp.pag_fat_emesse').insert(nuovo_pagcliente)
         #se abbiamo un pagamento maggiore delle fatture selezionate sull'ultima fattura sarà inserito il maggior pagamento
         if rim_pag > 0:
             nuovo_pagcliente = self.db.table('acc_mp.pag_fat_emesse').newrecord(fatt_emesse_id=fat_id, data=data_saldo, importo=rim_pag, note=note)
