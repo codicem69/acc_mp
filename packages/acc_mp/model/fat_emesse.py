@@ -20,8 +20,14 @@ class Table(object):
                                         WHEN ($scadenza - CURRENT_DATE)>0 AND $saldo<=0  THEN '!![en]PAYED' 
                                         WHEN ($scadenza - CURRENT_DATE)<0 AND $saldo<=0 THEN '!![en]PAYED' ELSE 'Scaduta da giorni ' || cast((CURRENT_DATE-$scadenza) as varchar) END """,
                                         name_long='!![en]Expire days', dtype='T')
-        tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse',columns='coalesce(SUM($importo),0)', where="$fatt_emesse_id=#THIS.id"),dtype='N',format='#,###.00',
-                          name_long='!![it]Totale pagato')
+        #tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse',columns='coalesce(SUM($importo),0)', where="$fatt_emesse_id=#THIS.id"),dtype='N',format='#,###.00',
+        #                  name_long='!![it]Totale pagato')
+
+        #formulaColumn parametrica prelevando la data di calcolo dal dbEnv fissato nella th della toolbar: 
+        # bar.data('^acc_mp_fat_emesse.view.queryBySample.c_0',serverpath='data_saldo',dbenv=True)
+        tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse', columns='coalesce(SUM($importo),0)', 
+                                                where='$fatt_emesse_id=#THIS.id AND $data<=coalesce(:env_data_saldo,:env_workdate)'))#, var_data_rif='2024-12-31')
+
         tbl.formulaColumn('saldo', "$importo-coalesce($tot_pag,0)",dtype='N',name_long='!![it]Saldo',format='#,###.00')
         tbl.formulaColumn('semaforo',"""CASE WHEN $saldo = 0 THEN true ELSE false END""",dtype='B',name_long=' ')
         tbl.formulaColumn('anno_doc',"date_part('year', $data)", dtype='D')

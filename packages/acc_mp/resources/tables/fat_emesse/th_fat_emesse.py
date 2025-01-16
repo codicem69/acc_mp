@@ -28,7 +28,7 @@ class View(BaseComponent):
     
     def th_query(self):
         return dict(column='id', op='contains', val='')
-
+       
     def th_sections_fatemesse(self):
         return [dict(code='tutti',caption='!![it]Tutte'),
                 dict(code='da_saldare',caption='!![it]da saldare',
@@ -51,7 +51,10 @@ class View(BaseComponent):
                         sections_imbarcazione_multiButton=False,sections_imbarcazione_lbl='!![it]Imbarcazione',sections_imbarcazione_remote=self.sectionsImbarcazione)
                         #,gradient_from='#999',gradient_to='#888')
         bar.actions.div('Actions')
-    
+        #passiamo nel dbEnv al path data_saldo la data che inseriamo nella querybysample data <= che a sua volta sara prelevata dalla formulaColumn
+        #per calcolare il totale pagato alla data
+        bar.data('^acc_mp_fat_emesse.view.queryBySample.c_0',serverpath='data_saldo',dbenv=True)
+
     @public_method(remote_cliente='^.cliente_id.current')
     def sectionsImbarcazione(self,cliente=None):
         #print(x)
@@ -69,7 +72,7 @@ class View(BaseComponent):
         return result
         
     def th_queryBySample(self):
-        return dict(fields=[dict(field='data', lbl='Date <=',width='10em', op='lesseq', val=''),
+        return dict(fields=[dict(field='data', lbl='Date <=',width='10em', op='lesseq'),
                             dict(field='data', lbl='Date >=',width='10em', op='greatereq', val=''),
                             dict(field='data', lbl='!![it]Data fattura',width='10em')],
                             cols=4, isDefault=True) 

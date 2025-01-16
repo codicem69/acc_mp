@@ -208,15 +208,17 @@ class Main(TableScriptToHtml):
                         pag_progressivo += tot_pag
                         saldo_fat = 0
                         saldo_fat = importo_fat-pag_progressivo
-                        
+
 
                         righe_pag.append(dict(data=data,doc_n=doc_n, nome_imb=descrizione_vers, importo='',
                                   tot_pag=tot_pag,saldo='',cliente=cliente))
+
                 bal_cliente+=saldo_fat
 
                 #if r == len(fat_emesse)-1:
                 #    righe_pag.append(dict(data='',doc_n='Balance', descrizione='Totale ' + str(cliente), importo='',
                 #                  tot_pag='',saldo='',cliente='',balance_cliente=bal_cliente))    
+
 
                 righe_fat.append(dict(data=data_fat,doc_n=doc_n, nome_imb=nome_imb, importo=importo_fat,
                                   tot_pag='',saldo=saldo_fat,cliente=cliente))
@@ -226,7 +228,7 @@ class Main(TableScriptToHtml):
                 for myDict in righe_fat:
                     if myDict not in righe:
                         righe.append(myDict)
-                
+        #print(x)
         return righe    
     
 

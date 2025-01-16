@@ -132,7 +132,7 @@ class Main(TableScriptToHtml):
         #    condition.append('$data >= :data_inizio')
         #where = ' AND '.join(condition
         #self.cliente_id=self.record('selectionPkeys')
-        clienti_pkeys = self.db.table('acc_mp.cliente').query(columns="$id", where='$balance <>0').selection().output('pkeylist')
+        clienti_pkeys = self.db.table('acc_mp.cliente').query(columns="$id", where='$balance >=0').selection().output('pkeylist')
         self.cliente_id=clienti_pkeys
         if self.parameter('cliente_id'):
             len_cliente=1
@@ -177,7 +177,7 @@ class Main(TableScriptToHtml):
                                             al=self.parameter('al')).fetch()
         
 
-            #print(x)
+
             cliente=clienti[r][1]
             #print(x)
             balance_cliente = clienti[r][2]

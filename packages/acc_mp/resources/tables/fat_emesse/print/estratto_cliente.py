@@ -23,6 +23,6 @@ class Main(BaseResourcePrint):
        fb = pane.formbuilder(cols=1, width='220px')
        fb.checkbox(value='^.balance', label='!![it]Solo crediti', lbl='Balance')
        fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno')
-       fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al')
+       fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al',validate_notnull='^.al')
        fb.dateTextBox(value='^.al',lbl='!![it]Data al')
    #    fb.dbselect(value='^.cliente_id', table='fatt.cliente', lbl='Cliente', selected_ragione_sociale='.ragione_sociale')
