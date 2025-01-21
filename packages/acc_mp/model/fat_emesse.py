@@ -26,7 +26,7 @@ class Table(object):
         #formulaColumn parametrica prelevando la data di calcolo dal dbEnv fissato nella th della toolbar: 
         # bar.data('^acc_mp_fat_emesse.view.queryBySample.c_0',serverpath='data_saldo',dbenv=True)
         tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse', columns='coalesce(SUM($importo),0)', 
-                                                where='$fatt_emesse_id=#THIS.id AND $data<=coalesce(:env_data_saldo,:env_workdate)'))#, var_data_rif='2024-12-31')
+                                                where='$fatt_emesse_id=#THIS.id AND $data<=coalesce(:env_data_saldo,:env_workdate)'),dtype='N',format='#,###.00')#, var_data_rif='2024-12-31')
         tbl.formulaColumn('tot_pag_effettivo',select=dict(table='acc_mp.pag_fat_emesse', columns='coalesce(SUM($importo),0)', 
                                                 where='$fatt_emesse_id=#THIS.id'))
         tbl.formulaColumn('saldo_effettivo', "$importo-coalesce($tot_pag_effettivo,0)",dtype='N',name_long='!![it]Saldo Effettivo',format='#,###.00')

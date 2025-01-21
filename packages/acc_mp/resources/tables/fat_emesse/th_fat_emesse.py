@@ -17,7 +17,7 @@ class View(BaseComponent):
         r.fieldcell('importo', totalize=True)
         r.fieldcell('scadenza')
         r.fieldcell('giorni_scadenza', width='11em')
-        r.fieldcell('tot_pag', totalize=True,name='^name_totpag')
+        r.fieldcell('tot_pag', totalize='total.totpag',name='^name_totpag')
         r.fieldcell('saldo', totalize=True,name='^name_saldo', 
                           range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
         r.fieldcell('semaforo_al',semaphore=True)
@@ -31,6 +31,9 @@ class View(BaseComponent):
     
     def th_query(self):
         return dict(column='id', op='contains', val='')
+
+    def th_options(self):
+        return dict(grid_footer='Totali')
        
     def th_sections_fatemesse(self):
         return [dict(code='tutti',caption='!![it]Tutte'),
@@ -110,6 +113,9 @@ class ViewFromFatture(BaseComponent):
     def th_query(self):
         return dict(column='id', op='contains', val='')
 
+    def th_options(self):
+        return dict(grid_footer='Totali')
+    
     def th_sections_fatemesse(self):
         return [dict(code='tutti',caption='!![it]Tutte'),
                 dict(code='da_saldare',caption='!![it]Da saldare',
