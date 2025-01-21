@@ -27,9 +27,12 @@ class Table(object):
         # bar.data('^acc_mp_fat_emesse.view.queryBySample.c_0',serverpath='data_saldo',dbenv=True)
         tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse', columns='coalesce(SUM($importo),0)', 
                                                 where='$fatt_emesse_id=#THIS.id AND $data<=coalesce(:env_data_saldo,:env_workdate)'))#, var_data_rif='2024-12-31')
-
+        tbl.formulaColumn('tot_pag_effettivo',select=dict(table='acc_mp.pag_fat_emesse', columns='coalesce(SUM($importo),0)', 
+                                                where='$fatt_emesse_id=#THIS.id'))
+        tbl.formulaColumn('saldo_effettivo', "$importo-coalesce($tot_pag_effettivo,0)",dtype='N',name_long='!![it]Saldo Effettivo',format='#,###.00')
         tbl.formulaColumn('saldo', "$importo-coalesce($tot_pag,0)",dtype='N',name_long='!![it]Saldo',format='#,###.00')
-        tbl.formulaColumn('semaforo',"""CASE WHEN $saldo = 0 THEN true ELSE false END""",dtype='B',name_long=' ')
+        tbl.formulaColumn('semaforo_eff',"""CASE WHEN $saldo_effettivo = 0 THEN true ELSE false END""",dtype='B',name_long=' ')
+        tbl.formulaColumn('semaforo_al',"""CASE WHEN $saldo = 0 THEN true ELSE false END""",dtype='B',name_long=' ')
         tbl.formulaColumn('anno_doc',"date_part('year', $data)", dtype='D')
         tbl.formulaColumn('doc_imp',"$doc_n || ' € ' || $importo || ' - ' || $note")
 

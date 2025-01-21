@@ -17,10 +17,13 @@ class View(BaseComponent):
         r.fieldcell('importo', totalize=True)
         r.fieldcell('scadenza')
         r.fieldcell('giorni_scadenza', width='11em')
-        r.fieldcell('tot_pag', totalize=True)
-        r.fieldcell('saldo', totalize=True,
+        r.fieldcell('tot_pag', totalize=True,name='^name_totpag')
+        r.fieldcell('saldo', totalize=True,name='^name_saldo', 
                           range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
-        r.fieldcell('semaforo',semaphore=True)
+        r.fieldcell('semaforo_al',semaphore=True)
+        r.fieldcell('saldo_effettivo', totalize=True,
+                          range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
+        r.fieldcell('semaforo_eff',semaphore=True)
         r.fieldcell('note',width='auto')
 
     def th_order(self):
@@ -54,7 +57,10 @@ class View(BaseComponent):
         #passiamo nel dbEnv al path data_saldo la data che inseriamo nella querybysample data <= che a sua volta sara prelevata dalla formulaColumn
         #per calcolare il totale pagato alla data
         bar.data('^acc_mp_fat_emesse.view.queryBySample.c_0',serverpath='data_saldo',dbenv=True)
-
+        bar.dataController("""if(data_saldo) {SET name_saldo='Saldo al '+ data_saldo; SET name_totpag = 'Tot.Pag. al '+data_saldo;} else 
+                           {SET name_saldo='Saldo al '+ data_att; SET name_totpag='Tot.Pag. al '+ data_att;}""",
+                           data_saldo='^acc_mp_fat_emesse.view.queryBySample.c_0',data_att=self.workdate.strftime("%d/%m/%Y"),_onStart=True)
+        
     @public_method(remote_cliente='^.cliente_id.current')
     def sectionsImbarcazione(self,cliente=None):
         #print(x)
@@ -88,10 +94,15 @@ class ViewFromFatture(BaseComponent):
         r.fieldcell('importo', totalize=True)
         r.fieldcell('scadenza')
         r.fieldcell('giorni_scadenza', width='11em')
-        r.fieldcell('tot_pag', totalize=True)
-        r.fieldcell('saldo', totalize=True,
+        r.fieldcell('tot_pag', totalize=True,name='^name_totpag')
+        r.fieldcell('saldo', totalize=True,name='^name_saldo', 
                           range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
-        r.fieldcell('semaforo',semaphore=True)
+        r.fieldcell('semaforo_al',semaphore=True)
+        r.fieldcell('saldo_effettivo', totalize=True,
+                          range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
+        #r.fieldcell('saldo', totalize=True,
+        #                  range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
+        r.fieldcell('semaforo_eff',semaphore=True)
 
     def th_order(self):
         return 'data:d,doc_n:d'
@@ -117,7 +128,11 @@ class ViewFromFatture(BaseComponent):
                         sections_imbarcazione_width='30em',sections_imbarcazione_remote=self.sectionsImbarcazione)
                         #,gradient_from='#999',gradient_to='#888')
         bar.actions.div('Actions')
-    
+        bar.data('^acc_mp_cliente.form.acc_mp_fat_emesse.view.queryBySample.c_0',serverpath='data_saldo',dbenv=True)
+        bar.dataController("""if(data_saldo) {SET name_saldo='Saldo al '+ data_saldo; SET name_totpag = 'Tot.Pag. al '+data_saldo;} else 
+                           {SET name_saldo='Saldo al '+ data_att; SET name_totpag='Tot.Pag. al '+ data_att;}""",
+                           data_saldo='^acc_mp_fat_emesse.view.queryBySample.c_0',data_att=self.workdate.strftime("%d/%m/%Y"),_onStart=True)
+        
     @public_method(remote_cliente='^#FORM.record.id')
     def sectionsImbarcazione(self,cliente,**kwargs):
         #prendiamo agency_id nel currentEnv
