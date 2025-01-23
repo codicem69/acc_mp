@@ -185,7 +185,7 @@ class ViewFattureImb(BaseComponent):
         r.fieldcell('tot_pag', totalize=True)
         r.fieldcell('saldo', totalize=True,
                           range_alto='value>0',range_alto_style='color:red;font-weight:bold;',range_basso='value<=0',range_basso_style='color:black;font-weight:bold;')
-        r.fieldcell('semaforo',semaphore=True)
+        r.fieldcell('semaforo_eff',semaphore=True)
 
     def th_order(self):
         return 'data:d,doc_n:d'

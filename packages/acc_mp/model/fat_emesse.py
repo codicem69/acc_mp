@@ -1,4 +1,5 @@
 # encoding: utf-8
+from gnr.core.gnrdecorator import public_method
 
 class Table(object):
     def config_db(self,pkg):
@@ -53,3 +54,8 @@ class Table(object):
             return
         self.aggiornaCliente(record)
         
+    @public_method
+    def test(self,**kwargs):#,data=None,importo=None):
+
+        prova ='ciao'
+        return prova
