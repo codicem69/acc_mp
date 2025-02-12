@@ -81,9 +81,9 @@ class View(BaseComponent):
         return result
         
     def th_queryBySample(self):
-        return dict(fields=[dict(field='data', lbl='Date <=',width='10em', op='lesseq'),
-                            dict(field='data', lbl='Date >=',width='10em', op='greatereq', val=''),
-                            dict(field='data', lbl='!![it]Data fattura',width='10em')],
+        return dict(fields=[dict(field='data', lbl='Date <=',width='10em', op='lesseq', tag='dateTextBox'),
+                            dict(field='data', lbl='Date >=',width='10em', op='greatereq', val='', tag='dateTextBox'),
+                            dict(field='data', lbl='!![it]Data fattura',width='10em', tag='dateTextBox')],
                             cols=4, isDefault=True) 
 
 class ViewFromFatture(BaseComponent):
