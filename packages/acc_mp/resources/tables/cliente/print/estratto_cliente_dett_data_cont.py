@@ -22,10 +22,12 @@ class Main(BaseResourcePrint):
        #years = ','.join(str(e) for e in last_years)
        #Prepariamo la stringa con gli ultimi 5 anni separati da virgola da passare alla filteringSelect
         fb = pane.formbuilder(cols=1, width='220px')
+        fb.div("Se la stampa al primo avvio non parte bisogna ripetere l'operazione")
         fb.checkbox(value='^.balance', label='!![it]Solo crediti', lbl='Balance')
         fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno', hidden='^.dal')
         fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al',validate_notnull='^.al', hidden='^.anno')
         fb.dateTextBox(value='^.al',lbl='!![it]Data al',validate_notnull='^.dal', hidden='^.anno')
+        fb.div("Se si vuole stampare la situazione di tutti i clienti non selezionare il cliente")
         fb.dbselect(value='^.cliente_id', table='acc_mp.cliente', lbl='Cliente', selected_rag_sociale='.rag_sociale',hasDownArrow=True)
         #fb.data('^.al',serverpath='data_saldo',dbenv=True) #passiamo nella env la data_saldo per essere utilizzata dalla formulaColumn nel calcolo del saldo alla data
         fb.dataController("""if(anno){var txt_1=anno;
