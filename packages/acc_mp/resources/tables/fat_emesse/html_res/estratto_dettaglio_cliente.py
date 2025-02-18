@@ -19,7 +19,7 @@ class Main(TableScriptToHtml):
     #Fornendo a totalize_footer una stringa testuale, questa verrà usata come etichetta della riga di totalizzazione
     empty_row=dict()
     #Grazie a questo parametro in caso di mancanza di dati verrà stampata una griglia vuota invece di una pagina bianca
-    virtual_columns = '@fatt_emesse_id.tot_pag,@fatt_emmese_id.saldo' #aggiungiamo le colonne calcolate
+    virtual_columns = '@fatt_emesse_id.tot_pag,@fatt_emesse_id.saldo' #aggiungiamo le colonne calcolate
 
     def docHeader(self, header):
         #Questo metodo definisce il layout e il contenuto dell'header della stampa
@@ -103,7 +103,7 @@ class Main(TableScriptToHtml):
     
     def gridData(self): 
         condition = ['$cliente_id=:cliente_id']
-        condition_pag = []
+        condition_pag = ['@fatt_emesse_id.cliente_id=:cliente_id']
         balance=0
         if self.parameter('balance') == True:
             condition.append('$saldo>:balance')
@@ -111,7 +111,7 @@ class Main(TableScriptToHtml):
         #    condition.append('$saldo>=:balance')    
         if self.parameter('anno'):
             condition.append('$anno_doc=:anno')
-            condition_pag.append('$anno_doc=:anno')
+            #condition_pag.append('$anno_doc=:anno')
         if self.parameter('dal') and self.parameter('al'):
             condition.append('$data BETWEEN :dal AND :al')
             condition_pag.append('$data BETWEEN :dal AND :al')
@@ -167,7 +167,8 @@ class Main(TableScriptToHtml):
                                             where=where_pag,
                                             anno=self.parameter('anno'),
                                             dal=self.parameter('dal'),
-                                            al=self.parameter('al')).fetch()
+                                            al=self.parameter('al'),
+                                            cliente_id=cliente_id).fetch()
         
             
             #print(x)

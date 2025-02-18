@@ -20,7 +20,7 @@ class Main(TableScriptToHtml):
     #Fornendo a totalize_footer una stringa testuale, questa verrà usata come etichetta della riga di totalizzazione
     empty_row=dict()
     #Grazie a questo parametro in caso di mancanza di dati verrà stampata una griglia vuota invece di una pagina bianca
-    virtual_columns = '@fatt_emesse_id.tot_pag,@fatt_emesse_id.saldo' #aggiungiamo le colonne calcolate
+    virtual_columns = '@fatt_emesse_id.tot_pag,@fatt_emmese_id.saldo' #aggiungiamo le colonne calcolate
    
     def docHeader(self, header):
         #Questo metodo definisce il layout e il contenuto dell'header della stampa
@@ -108,6 +108,12 @@ class Main(TableScriptToHtml):
         return height
     
     def gridData(self): 
+        
+        #if self.parameter('anno'):
+        #    year_v= self.parameter('anno')
+        #    datasaldo=datetime.strptime(year_v+'-12-31', '%Y-%m-%d').date()
+        #    self.page.pageStore().setItem('data_saldo',datasaldo)
+
         condition = ['$cliente_id=:cliente_id']
         condition_pag = ['@fatt_emesse_id.cliente_id=:cliente_id']
         balance=0
@@ -117,10 +123,10 @@ class Main(TableScriptToHtml):
         #    condition.append('$saldo>=:balance')    
         if self.parameter('anno'):
             condition.append('$anno_doc=:anno')
-            #condition_pag.append('$anno_doc=:anno')
+            condition_pag.append('$anno_doc=:anno')
         if self.parameter('dal') and self.parameter('al'):
             condition.append('$data BETWEEN :dal AND :al')
-            #condition_pag.append('$data BETWEEN :dal AND :al')
+            condition_pag.append('$data BETWEEN :dal AND :al')
          
         where = ' AND '.join(condition)
         where_pag = ' AND '.join(condition_pag)
@@ -178,7 +184,7 @@ class Main(TableScriptToHtml):
                                             cliente_id=cliente_id).fetch()
         
     
-            #print(x)
+            
             cliente=clienti[r][1]
             #print(x)
             balance_cliente = clienti[r][2]
@@ -235,8 +241,9 @@ class Main(TableScriptToHtml):
                 for myDict in righe_fat:
                     if myDict not in righe:
                         righe.append(myDict)
-                       
+        
         self.page.pageStore().setItem('data_saldo',None) #riportiamo il valore a None della data_saldo nella dbEnv    
+        
         return righe  
 
     

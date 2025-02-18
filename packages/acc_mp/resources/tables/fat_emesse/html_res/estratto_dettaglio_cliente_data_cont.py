@@ -3,8 +3,8 @@ from datetime import datetime
 
 
 class Main(TableScriptToHtml):
-    maintable = 'acc_mp.cliente'
-    row_table = 'acc_mp.cliente'
+    maintable = 'acc_mp.fat_emesse'
+    row_table = 'acc_mp.fat_emesse'
     css_requires='grid'
     page_width = 297
     page_height = 210
@@ -21,10 +21,10 @@ class Main(TableScriptToHtml):
     empty_row=dict()
     #Grazie a questo parametro in caso di mancanza di dati verrà stampata una griglia vuota invece di una pagina bianca
     virtual_columns = '@fatt_emesse_id.tot_pag,@fatt_emesse_id.saldo' #aggiungiamo le colonne calcolate
-   
+
     def docHeader(self, header):
         #Questo metodo definisce il layout e il contenuto dell'header della stampa
-        
+
         #if len(self.cliente_id) > 1:
         #    cliente=''
         #else:
@@ -108,19 +108,28 @@ class Main(TableScriptToHtml):
         return height
     
     def gridData(self): 
+
+        #if self.parameter('anno'):
+        #    year_v= self.parameter('anno')
+        #    datasaldo=datetime.strptime(year_v+'-12-31', '%Y-%m-%d').date()
+        #    self.page.pageStore().setItem('data_saldo',datasaldo)
+        #else:
+        #    self.page.pageStore().setItem('data_saldo',self.parameter('al'))
+
         condition = ['$cliente_id=:cliente_id']
         condition_pag = ['@fatt_emesse_id.cliente_id=:cliente_id']
         balance=0
         if self.parameter('balance') == True:
-            condition.append('$saldo>:balance')
+
+           condition.append('$saldo>:balance')
         #else:
         #    condition.append('$saldo>=:balance')    
         if self.parameter('anno'):
             condition.append('$anno_doc=:anno')
-            #condition_pag.append('$anno_doc=:anno')
+            condition_pag.append('$anno_doc=:anno')
         if self.parameter('dal') and self.parameter('al'):
             condition.append('$data BETWEEN :dal AND :al')
-            #condition_pag.append('$data BETWEEN :dal AND :al')
+            condition_pag.append('$data BETWEEN :dal AND :al')
          
         where = ' AND '.join(condition)
         where_pag = ' AND '.join(condition_pag)
@@ -178,7 +187,7 @@ class Main(TableScriptToHtml):
                                             cliente_id=cliente_id).fetch()
         
     
-            #print(x)
+            
             cliente=clienti[r][1]
             #print(x)
             balance_cliente = clienti[r][2]
@@ -218,7 +227,7 @@ class Main(TableScriptToHtml):
                         saldo_fat = 0
                         saldo_fat = importo_fat-pag_progressivo
                         
-
+                        #if not self.parameter('balance') == True:
                         righe_pag.append(dict(data=data,doc_n=doc_n, nome_imb=descrizione_vers, importo='',
                                   tot_pag=tot_pag,saldo='',cliente=cliente))
                 bal_cliente+=saldo_fat
@@ -235,10 +244,21 @@ class Main(TableScriptToHtml):
                 for myDict in righe_fat:
                     if myDict not in righe:
                         righe.append(myDict)
-                       
-        self.page.pageStore().setItem('data_saldo',None) #riportiamo il valore a None della data_saldo nella dbEnv    
-        return righe  
 
+       # self.page.pageStore().setItem('data_saldo',None) #riportiamo il valore a None della data_saldo nella dbEnv
+
+        #righe_fin=[]
+        #
+        #for r in range(len(righe)):
+        #    if self.parameter('balance') == True:
+        #        if not righe[r]['saldo']==0 and not righe[r]['saldo'] == '':
+        #            righe_fin.append(righe[r])
+        #    else:
+        #        righe_fin=righe
+        #print(x)
+        #return righe_fin
+        self.page.pageStore().setItem('data_saldo',None) #riportiamo il valore a None della data_saldo nella dbEnv
+        return righe
     
 
     def docFooter(self, footer, lastPage=None):

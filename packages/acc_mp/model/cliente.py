@@ -21,8 +21,9 @@ class Table(object):
         tbl.column('balance', dtype='N', name_short='!![it]Saldo contabile',format='#,###.00', batch_assign=True)
         tbl.formulaColumn('full_cliente',"""$rag_sociale || coalesce(' - '|| $indirizzo, '') || coalesce(' - '|| $cap,'') || coalesce(' - '|| $citta,'') || 
                           coalesce(' P.IVA: ' || $vat,'') || coalesce(' - codice univoco: ' || $cod_univoco,'') || coalesce(' - pec: ' || $pec,'') """ )
-        tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse',columns='coalesce(sum($importo),0)', where='@fatt_emesse_id.cliente_id=#THIS.id'),dtype='N',format='#,###.00',
-                          name_long='!![it]Totale pagamenti')
+        #tbl.formulaColumn('tot_pag',select=dict(table='acc_mp.pag_fat_emesse',columns='coalesce(sum($importo),0)', where='@fatt_emesse_id.cliente_id=#THIS.id'),dtype='N',format='#,###.00',
+        #                  name_long='!![it]Totale pagamenti')
+                                  
     def ricalcolaBalanceCliente(self,cliente_id=None):
         with self.recordToUpdate(cliente_id) as record:
             totale_fatture = self.db.table('acc_mp.fat_emesse').readColumns(columns="""SUM($importo) AS totale_fatture""",

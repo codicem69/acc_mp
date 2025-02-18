@@ -21,8 +21,7 @@ class Main(BaseResourcePrint):
        #years = ','.join(str(e) for e in last_years)
        #Prepariamo la stringa con gli ultimi 5 anni separati da virgola da passare alla filteringSelect
        fb = pane.formbuilder(cols=1, width='220px')
-       fb.div("""Per stampare l'estratto con i crediti alla data desiderata bisogna prima inserire nel campo Date<= 
-              della form principale la data per il calcolo del totale pagato a quella data e poi flaggare qui solo crediti e inserire data inizio e fine""")
+       fb.div("""Se inseriamo prima la data nel campo Date<= della form principale ci verrà restituito la situazione contabile a quella data""")
        fb.checkbox(value='^.balance', label='!![it]Solo crediti', lbl='Balance')
        fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno')
        fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al',validate_notnull='^.al')
