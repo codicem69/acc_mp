@@ -13,11 +13,13 @@ class Menu(object):
             accmp.thpage(u"fat_emesse", table="acc_mp.fat_emesse", multipage="True", tags="")
             accmp.thpage(u"!![it]Imbarcazioni", table="acc_mp.imbarcazione", multipage="True", tags="")
             accmp.thpage(u"!![it]Pagamenti", table="acc_mp.pag_fat_emesse", multipage="True", tags="")
+            accmp.thpage(u"!![it]Ricevuta", table="acc_mp.ricevuta", multipage="True", tags="")
             accmp.lookupBranch(u"Lookup tables", pkg="acc_mp")
         else:
             #accmp = root.branch(u"acc_mp", tags="")
             root.thpage(u"!![it]Cliente", table="acc_mp.cliente", multipage="True", tags="")
             root.thpage(u"fat_emesse", table="acc_mp.fat_emesse", multipage="True", tags="")
             root.thpage(u"!![it]Imbarcazioni", table="acc_mp.imbarcazione", multipage="True", tags="")
+            root.thpage(u"!![it]Ricevuta", table="acc_mp.ricevuta", multipage="True", tags="")
             #accmp.thpage(u"!![it]Pagamenti", table="acc_mp.pag_fat_emesse", multipage="True", tags="")
             root.lookupBranch(u"Lookup tables", pkg="acc_mp")
