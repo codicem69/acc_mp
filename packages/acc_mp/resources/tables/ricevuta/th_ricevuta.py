@@ -50,6 +50,15 @@ class Form(BaseComponent):
         #fb.field('cliente_id' )
         #fb.field('note' )
 
+    def th_bottom_custom(self, bottom):
+        bar = bottom.slotBar('5,stampa_ricevuta,*,10')
+        bar.stampa_ricevuta.button('Stampa Ricevuta', iconClass='print',
+                                    action="""genro.publish("table_script_run",{table:"acc_mp.ricevuta",
+                                                                               res_type:'print',
+                                                                               resource:'stampa_ric',
+                                                                               pkey: pkey})""",
+                                                                               pkey='=#FORM.pkey')
+        
     def ricRighe(self,pane):
         pane.inlineTableHandler(relation='@dett_ric_id',viewResource='ViewFromRIC',
                            picker='prod_id')
