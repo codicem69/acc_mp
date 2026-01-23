@@ -150,6 +150,7 @@ class Main(TableScriptToHtml):
         #print(x)
         righe_fat=[]
         righe=[]
+
         for r in range(len_cliente):
             #cliente_id=self.record('selectionPkeys')[r]
             #verifichiamo se alla stampa abbiamo scelto il singolo fornitore così passiamo la query giusta per la ricerca del singolo
@@ -242,6 +243,7 @@ class Main(TableScriptToHtml):
                 righe = []
                 righe_fat.extend(righe_pag)
                 for myDict in righe_fat:
+
                     if myDict not in righe:
                         righe.append(myDict)
 

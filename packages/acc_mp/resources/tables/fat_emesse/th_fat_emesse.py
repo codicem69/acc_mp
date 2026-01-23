@@ -67,7 +67,7 @@ class View(BaseComponent):
     @public_method(remote_cliente='^.cliente_id.current')
     def sectionsImbarcazione(self,cliente=None):
         #print(x)
-        if cliente is None or cliente=='c_all_begin':
+        if cliente is None or cliente=='_all_':
             f = self.db.table('acc_mp.imbarcazione').query(where="",order_by='$nome').selection().output('records')   
         else:     
             f = self.db.table('acc_mp.imbarcazione').query(where="LOWER($cliente_id)=:cid",cid=cliente,order_by='$nome').selection().output('records')
