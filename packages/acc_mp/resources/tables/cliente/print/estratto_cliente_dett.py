@@ -22,6 +22,7 @@ class Main(BaseResourcePrint):
        #Prepariamo la stringa con gli ultimi 5 anni separati da virgola da passare alla filteringSelect
        fb = pane.formbuilder(cols=1, width='220px')
        fb.checkbox(value='^.balance', label='!![it]Solo crediti', lbl='Balance')
+       fb.div("Attenzione selezionando l'Anno verranno calcolati solo le fatture e pagamenti relativi a quell'Anno")
        fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno', hidden='^.al')
        fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al',validate_notnull='^.al', hidden='^.anno')
        fb.dateTextBox(value='^.al',lbl='!![it]Data al',validate_notnull='^.dal', hidden='^.anno')

@@ -24,6 +24,7 @@ class Main(BaseResourcePrint):
         fb = pane.formbuilder(cols=1, width='220px')
         #fb.div("Se la stampa al primo avvio non parte bisogna ripetere l'operazione")
         fb.checkbox(value='^.balance', label='!![it]Solo crediti', lbl='Balance', default=True)
+        fb.div("Attenzione selezionando l'Anno verranno calcolati solo le fatture e pagamenti relativi a quell'Anno")
         fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno', hidden='^.dal',validate_onAccept='FIRE #FORM.anno')
         fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al',validate_notnull='^.al', hidden='^.anno')
         fb.dateTextBox(value='^.al',lbl='!![it]Data al',validate_notnull='^.dal', hidden='^.anno')

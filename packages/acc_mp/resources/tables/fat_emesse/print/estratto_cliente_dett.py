@@ -23,6 +23,7 @@ class Main(BaseResourcePrint):
        fb = pane.formbuilder(cols=1, width='220px')
        fb.div("""Stampa situazione contabile alla data odierna """)
        fb.checkbox(value='^.balance', label='!![it]Solo crediti', lbl='Balance')
+       fb.div("Attenzione selezionando l'Anno verranno calcolati solo le fatture relative a quell'Anno")
        fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno')
        fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al',validate_notnull='^.al')
        fb.dateTextBox(value='^.al',lbl='!![it]Data al')

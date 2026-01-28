@@ -23,6 +23,7 @@ class Main(BaseResourcePrint):
        fb = pane.formbuilder(cols=1, width='220px')
        fb.div("Ricordati di effettuare prima la selezione dei clienti perchè verrà stampato ogni singolo estratto per cliente")
        fb.checkbox(value='^.balance', label='!![it]Solo Crediti', lbl='Balance')
+       fb.div("Attenzione selezionando l'Anno verranno calcolati solo le fatture e pagamenti relativi a quell'Anno")
        fb.filteringSelect(value='^.anno', values=years, lbl='!![it]Anno')
        fb.dateTextBox(value='^.dal',lbl='!![it]Data dal',period_to='.al')
        fb.dateTextBox(value='^.al',lbl='!![it]Data al')
