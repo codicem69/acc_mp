@@ -246,7 +246,7 @@ class Main(TableScriptToHtml):
 
                     if myDict not in righe:
                         righe.append(myDict)
-
+        
        # self.page.pageStore().setItem('data_saldo',None) #riportiamo il valore a None della data_saldo nella dbEnv
 
         #righe_fin=[]
