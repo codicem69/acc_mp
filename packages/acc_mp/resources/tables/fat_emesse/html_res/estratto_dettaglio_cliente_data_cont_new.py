@@ -1,6 +1,6 @@
 from gnr.web.gnrbaseclasses import TableScriptToHtml
 from datetime import datetime
-import pandas as pd
+#import pandas as pd
 from collections import defaultdict
 
 class Main(TableScriptToHtml):
