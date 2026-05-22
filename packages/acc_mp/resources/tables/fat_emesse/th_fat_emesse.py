@@ -76,7 +76,8 @@ class View(BaseComponent):
         result.append(dict(code='tutti',caption='!![en]All'))
         #print(x)
         for r in f:
-            result.append(dict(code=r['id'], caption=r['nome']+' - '+str(r['reg_n']),
+            #print(x)
+            result.append(dict(code=r['id'], caption=r['nome']+' - '+str(r['reg_n']) + str(' - ' + r['@cliente_id.rag_sociale']) if r['@cliente_id.rag_sociale'] else '' ,
                      condition='$imbarcazione_id=:imb',condition_imb=r['id']))
         return result
         
